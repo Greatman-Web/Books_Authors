@@ -161,7 +161,9 @@ def generate_sample_books(authors):
 
 def import_data():
     """Import sample data into database."""
-    app = create_app('development')
+    # Use production config if DATABASE_URL is set (Render)
+    env = 'production' if os.environ.get('DATABASE_URL') else 'development'
+    app = create_app(env)
     
     with app.app_context():
         # Clear existing data

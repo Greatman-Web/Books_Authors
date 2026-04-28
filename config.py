@@ -28,8 +28,9 @@ class ProductionConfig(Config):
     """Production configuration."""
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///./instance/app.db')
     SESSION_COOKIE_SECURE = True
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
 
 config = {
     'development': DevelopmentConfig,
