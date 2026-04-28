@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Authors - Books & Authors{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Authors</h1>
+    <form class="d-flex" method="GET" role="search">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search authors..." 
+               value="{{ search }}" aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+</div>
+
+{% if authors.items %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Nationality</th>
+                <th>Birth - Death</th>
+                <th>Books</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors.items %}
+            <tr>
+                <td>
+                    <strong>{{ author.name }}</strong>
+                </td>
+                <td>
+                    {% if author.nationality %}
+                        {{ author.nationality }}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if author.birth_year %}
+                        {{ author.birth_year }}{% if author.death_year %} - {{ author.death_year }}{% endif %}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-info">{{ author.get_book_count() }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('author.view_author', author_id=author.id) }}" class="btn btn-sm btn-primary">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if authors.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('author.list_authors', page=authors.prev_num, search=search) }}">Previous</a>
+            </li>
+        {% endif %}
+        
+        {% for page_num in authors.iter_pages() %}
+            {% if page_num %}
+                {% if page_num == authors.page %}
+                    <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('author.list_authors', page=page_num, search=search) }}">{{ page_num }}</a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if authors.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('author.list_authors', page=authors.next_num, search=search) }}">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+<p class="text-muted text-center mt-4">
+    Showing page {{ authors.page }} of {{ authors.pages }} 
+    ({{ authors.total }} total authors)
+</p>
+{% else %}
+<div class="alert alert-info">
+    <h5>No authors found</h5>
+    <p>Try adjusting your search criteria.</p>
+</div>
+{% endif %}
+{% endblock %}

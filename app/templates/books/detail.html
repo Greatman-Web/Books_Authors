@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - Books & Authors{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="bg-light rounded p-5 text-center">
+            <h1>📖</h1>
+            <p class="text-muted">Book Cover</p>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <h1>{{ book.title }}</h1>
+        
+        <p class="lead">
+            <strong>Author:</strong>
+            <a href="{{ url_for('author.view_author', author_id=book.author.id) }}">
+                {{ book.get_author_name() }}
+            </a>
+        </p>
+        
+        {% if book.publication_year %}
+        <p>
+            <strong>Published:</strong> {{ book.publication_year }}
+        </p>
+        {% endif %}
+        
+        {% if book.isbn %}
+        <p>
+            <strong>ISBN:</strong> {{ book.isbn }}
+        </p>
+        {% endif %}
+        
+        {% if book.genre %}
+        <p>
+            <strong>Genre:</strong>
+            <span class="badge bg-secondary">{{ book.genre }}</span>
+        </p>
+        {% endif %}
+        
+        {% if book.language %}
+        <p>
+            <strong>Language:</strong> {{ book.language }}
+        </p>
+        {% endif %}
+        
+        {% if book.pages %}
+        <p>
+            <strong>Pages:</strong> {{ book.pages }}
+        </p>
+        {% endif %}
+        
+        {% if book.rating %}
+        <p>
+            <strong>Rating:</strong> ⭐ {{ "%.1f"|format(book.rating) }} / 5.0
+        </p>
+        {% endif %}
+        
+        <div class="mt-4">
+            <a href="{{ url_for('book.list_books') }}" class="btn btn-secondary me-2">Back to Books</a>
+            <a href="{{ url_for('author.view_author', author_id=book.author.id) }}" class="btn btn-primary">View Author</a>
+        </div>
+    </div>
+</div>
+
+<!-- Description -->
+{% if book.description %}
+<section class="mt-5">
+    <h2>Description</h2>
+    <p>{{ book.description }}</p>
+</section>
+{% endif %}
+
+<!-- Additional Info -->
+<section class="mt-5">
+    <h2>Additional Information</h2>
+    <table class="table">
+        <tr>
+            <th>Title</th>
+            <td>{{ book.title }}</td>
+        </tr>
+        <tr>
+            <th>Author</th>
+            <td><a href="{{ url_for('author.view_author', author_id=book.author.id) }}">{{ book.get_author_name() }}</a></td>
+        </tr>
+        {% if book.isbn %}
+        <tr>
+            <th>ISBN</th>
+            <td>{{ book.isbn }}</td>
+        </tr>
+        {% endif %}
+        {% if book.publication_year %}
+        <tr>
+            <th>Publication Year</th>
+            <td>{{ book.publication_year }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>Added</th>
+            <td>{{ book.created_at.strftime('%Y-%m-%d') }}</td>
+        </tr>
+    </table>
+</section>
+{% endblock %}

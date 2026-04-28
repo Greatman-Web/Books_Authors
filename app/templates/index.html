@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Books & Authors{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded-lg m-3">
+    <div class="container">
+        <h1 class="display-4">📚 Welcome to Books & Authors</h1>
+        <p class="lead">Explore thousands of books and discover their authors</p>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="row mb-5">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">📖 Total Books</h5>
+                <h2 class="card-text text-primary">{{ book_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">✍️ Total Authors</h5>
+                <h2 class="card-text text-success">{{ author_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">🌍 Countries</h5>
+                <h2 class="card-text text-info">50+</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Authors -->
+<section class="mb-5">
+    <h2 class="mb-4">Featured Authors</h2>
+    <div class="row">
+        {% if featured_authors %}
+            {% for author in featured_authors %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ author.name }}</h5>
+                        {% if author.nationality %}
+                        <p class="card-text">
+                            <small class="text-muted">{{ author.nationality }}</small>
+                        </p>
+                        {% endif %}
+                        {% if author.birth_year %}
+                        <p class="card-text">
+                            <small>📅 {% if author.death_year %}{{ author.birth_year }} - {{ author.death_year }}{% else %}b. {{ author.birth_year }}{% endif %}</small>
+                        </p>
+                        {% endif %}
+                        <p class="card-text">
+                            <strong>{{ author.get_book_count() }}</strong> books
+                        </p>
+                        <a href="{{ url_for('author.view_author', author_id=author.id) }}" class="btn btn-sm btn-primary">View Author</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No featured authors available.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Quick Links -->
+<section class="mb-5">
+    <h2>Quick Links</h2>
+    <div class="list-group">
+        <a href="{{ url_for('author.list_authors') }}" class="list-group-item list-group-item-action">
+            <h5>Browse All Authors</h5>
+            <p class="mb-0">Explore all {{ author_count }} authors in our database</p>
+        </a>
+        <a href="{{ url_for('book.list_books') }}" class="list-group-item list-group-item-action">
+            <h5>Browse All Books</h5>
+            <p class="mb-0">Discover all {{ book_count }} books from our collection</p>
+        </a>
+    </div>
+</section>
+{% endblock %}

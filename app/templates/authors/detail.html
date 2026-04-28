@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ author.name }} - Books & Authors{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        {% if author.image_url %}
+            <img src="{{ author.image_url }}" alt="{{ author.name }}" class="img-fluid rounded">
+        {% else %}
+            <div class="bg-light rounded p-5 text-center">
+                <h1>📚</h1>
+                <p class="text-muted">No image available</p>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-md-9">
+        <h1>{{ author.name }}</h1>
+        
+        {% if author.nationality %}
+        <p>
+            <strong>Nationality:</strong> {{ author.nationality }}
+        </p>
+        {% endif %}
+        
+        {% if author.birth_year or author.death_year %}
+        <p>
+            <strong>Life span:</strong> 
+            {% if author.birth_year %}
+                {{ author.birth_year }}
+            {% endif %}
+            {% if author.death_year %}
+                - {{ author.death_year }}
+            {% endif %}
+        </p>
+        {% endif %}
+        
+        {% if author.biography %}
+        <div class="mt-4">
+            <h5>Biography</h5>
+            <p>{{ author.biography }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="mt-4">
+            <span class="badge bg-primary fs-6">{{ books|length }} books</span>
+        </div>
+        
+        <div class="mt-3">
+            <a href="{{ url_for('author.list_authors') }}" class="btn btn-secondary">Back to Authors</a>
+        </div>
+    </div>
+</div>
+
+<!-- Author's Books -->
+<section class="mt-5">
+    <h2>Books by {{ author.name }}</h2>
+    
+    {% if books %}
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    
+                    {% if book.publication_year %}
+                    <p class="card-text">
+                        <small class="text-muted">📅 {{ book.publication_year }}</small>
+                    </p>
+                    {% endif %}
+                    
+                    {% if book.genre %}
+                    <p class="card-text">
+                        <small class="badge bg-secondary">{{ book.genre }}</small>
+                    </p>
+                    {% endif %}
+                    
+                    {% if book.rating %}
+                    <p class="card-text">
+                        <strong>Rating:</strong> ⭐ {{ "%.1f"|format(book.rating) }} / 5
+                    </p>
+                    {% endif %}
+                    
+                    {% if book.description %}
+                    <p class="card-text text-muted small">
+                        {{ book.description[:100] }}{% if book.description|length > 100 %}...{% endif %}
+                    </p>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('book.view_book', book_id=book.id) }}" class="btn btn-sm btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No books found for this author.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
